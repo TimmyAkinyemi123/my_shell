@@ -20,7 +20,7 @@ void exec_command(char *line)
 	else if (pid == 0)
 	{
 		char *argv[] = {line, NULL};
-		execlp(line, argv, NULL);
+		execve(line, argv, NULL);
 		perror("execve error");
 		exit(EXIT_FAILURE);
 	}
