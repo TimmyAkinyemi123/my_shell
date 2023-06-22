@@ -6,7 +6,7 @@
 char *read_line(void)
 {
 	char *line = NULL;
-	ssize_t bufsize = 0;
+	size_t bufsize = 0;
 	ssize_t bytes_read = getline(&line, &bufsize, stdin);
 
 	if (bytes_read == -1)
