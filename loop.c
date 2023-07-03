@@ -2,10 +2,10 @@
 
 void shell_loop(void)
 {
-	int exit_shell = 0;
 	char *line;
+	char **args;
 
-	while (!exit_shell)
+	while (1)
 	{
 		write(1, "$ ", 2);
 		line = read_line();
@@ -15,10 +15,11 @@ void shell_loop(void)
 			free(line);
 			continue;
 		}
-		if (check_exec(line) == 1) 
-			exec_command(line);
-		else
-			printf("Error: Executable file not found.\n");
+
+		args = tokenize_input(line);
+		exec_command(args);
+		
+		free(args);
 		free(line);
 	}
 }

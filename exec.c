@@ -1,12 +1,12 @@
 #include "shell.h"
 
-int check_exec(char *line)
+int check_exec(char *args)
 {
-	if (access(line, X_OK) == 0)
+	if (access(args, X_OK) == 0 && access(args, F_OK) == 0)
 		return (1);
 	return (0);
 }
-void exec_command(char *line)
+void exec_command(char **args)
 {
 	pid_t pid, wpid;
 	int status;
@@ -19,11 +19,13 @@ void exec_command(char *line)
 	}
 	else if (pid == 0)
 	{
-		char *argv[2];
-		argv[0] = line;
-		argv[1] = NULL;
-		execve(line, argv, NULL);
-		perror("execve error");
+		if (check_exec(args[0]) == 1)
+		{
+			if (execve(args[0], args, NULL) == -1)
+				perror("execve error");
+		}
+		else
+			 perror("Error: Executable file not found.\n");
 		exit(EXIT_FAILURE);
 	}
 	else
