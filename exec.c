@@ -19,6 +19,7 @@ void exec_command(char **args)
 	}
 	else if (pid == 0)
 	{
+<<<<<<< HEAD
 		if (check_exec(args[0]) == 1)
 		{
 			if (execve(args[0], args, NULL) == -1)
@@ -26,6 +27,11 @@ void exec_command(char **args)
 		}
 		else
 			 perror("Error: Executable file not found.\n");
+=======
+		char *argv[] = {line, NULL};
+		execve(line, argv, NULL);
+		perror("execve error");
+>>>>>>> refs/remotes/origin/main
 		exit(EXIT_FAILURE);
 	}
 	else
