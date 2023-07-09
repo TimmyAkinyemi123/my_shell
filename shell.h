@@ -13,10 +13,18 @@
 #include <fcntl.h>
 #include <dirent.h>
 
-int _strcmp(char *s1, char *s2);
+/*string functions*/
+char *_strcat(char *dest, const char *src);
+char *_strcpy(char *dest, const char *src);
+size_t _strlen(const char *str);
+int _strncmp(const char *s1, const char *s2, size_t n);
 size_t _strcspn(char *str, char *charset);
+
+/* command line interpreter functions */
 char *read_line();
 char **tokenize_input(char *line);
+char *_getenv(const char *name);
+char *handle_path(char *args);
 int check_exec(char *args);
 void exec_command(char **args);
 void print_error();
