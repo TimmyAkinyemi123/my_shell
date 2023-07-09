@@ -17,6 +17,12 @@ void shell_loop(void)
 		}
 
 		args = tokenize_input(line);
+		if (strcmp(args[0], "exit") == 0)
+		{
+			free(args);
+			free(line);
+			break;
+		}
 		exec_command(args);
 		
 		free(args);
