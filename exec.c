@@ -97,6 +97,11 @@ void exec_command(char **args)
 			}
 			free(cmd_path);
 		}
+		else
+		{
+			perror("Error: Executable file not found.\n");
+			exit(EXIT_FAILURE);
+		}
 	}
 	if (pid > 0)
 	{
