@@ -9,7 +9,7 @@ int check_exec(char *args)
 }
 char *handle_path(char *args)
 {
-	char *path = _getenv("PATH");
+	char *path = strdup(_getenv("PATH"));
 	char *dir = strtok(path, ":");
 	char *cmd_path;
 	size_t dir_len, args_len, path_len;
@@ -31,13 +31,12 @@ char *handle_path(char *args)
 		_strcat(cmd_path, args);
 		
 		if (access(cmd_path, X_OK) == 0 && access(cmd_path, F_OK) == 0)
-		{
 			return (cmd_path);
-		}
 		free(cmd_path);
 		dir = strtok(NULL, ":");
 	}
-	return (0);
+	free(path);
+	return (NULL);
 }
 char *_getenv(const char *name)
 {
@@ -61,34 +60,45 @@ void exec_command(char **args)
 	pid_t pid, wpid;
 	int status;
 
-	pid = fork();
-	if (pid < 0)
+	if (check_exec(args[0]) == 1)
 	{
-		perror("fork error");
-		exit(EXIT_FAILURE);
-	}
-	else if (pid == 0)
-	{
-		if (check_exec(args[0]) == 1)
+		pid = fork();
+		if (pid < 0)
+		{
+			perror("fork error");
+			exit(EXIT_FAILURE);
+		}
+		else if (pid == 0)
 		{
 			if (execve(args[0], args, NULL) == -1)
 				perror("execve error");
+			exit(EXIT_FAILURE);
 		}
-		else
+	}
+	else
+	{
+		char *cmd_path = handle_path(args[0]);
+
+		if (cmd_path != NULL)
 		{
-			char *cmd_path = handle_path(args[0]);
-			if (cmd_path)
+			args[0] = cmd_path;
+			pid = fork();
+			
+			if (pid < 0)
+			{
+				perror("fork error");
+				exit(EXIT_FAILURE);
+			}
+			else if (pid == 0)
 			{
 				if (execve(cmd_path, args, NULL) == -1)
 					perror("execve error");
+				exit(EXIT_FAILURE);
 			}
-			else
-				perror("Error: Executable file not found.\n");
 			free(cmd_path);
 		}
-		exit(EXIT_FAILURE);
 	}
-	else
+	if (pid > 0)
 	{
 		do
 		{
